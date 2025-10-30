@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DIDOT — Architecture • Events • Shop</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#faf8f6; /* warm neutral */
+      --ink:#1f1f1f; /* deep neutral text */
+      --muted:#6b6b6b;
+      --line:#e7e2dd;
+      --accent:#c8a77b; /* subtle gold */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      line-height:1.5; 
+    }
+    .wrap{max-width:1120px; margin:0 auto; padding:24px;}
+    header{position:sticky; top:0; backdrop-filter:saturate(180%) blur(8px); background:color-mix(in oklab, var(--bg) 85%, white 15%); border-bottom:1px solid var(--line); z-index:10}
+    .bar{display:flex; align-items:center; justify-content:space-between; padding:12px 24px;}
+    .brand{font-family:"Playfair Display",serif; letter-spacing:0.06em; font-weight:600; font-size:20px}
+    nav a{color:var(--ink); text-decoration:none; margin-left:18px; font-size:14px}
+    nav a:hover{opacity:.7}
+
+    .hero{display:grid; grid-template-columns: 1.2fr 1fr; gap:32px; align-items:end; padding:56px 24px 40px; border-bottom:1px solid var(--line)}
+    .hero h1{font-family:"Playfair Display",serif; font-size: clamp(36px, 6vw, 72px); line-height:1.05; margin:0 0 12px}
+    .hero p{color:var(--muted); font-size: clamp(16px, 2vw, 18px); max-width:56ch}
+    .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 18px; border:1px solid var(--ink); border-radius:999px; text-decoration:none; color:var(--ink); font-weight:500}
+    .btn:hover{background:var(--ink); color:#fff}
+    .btn.alt{border-color:var(--accent); color:var(--ink)}
+    .tag{display:inline-block; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+    .media{position:relative; border-radius:20px; overflow:hidden; aspect-ratio:4/5; background:#ddd}
+    .media img{width:100%; height:100%; object-fit:cover; display:block;}
+    .caption{position:absolute; bottom:10px; right:12px; background:rgba(255,255,255,.65); padding:6px 10px; border-radius:999px; font-size:12px}
+
+    section{padding:56px 24px; border-bottom:1px solid var(--line)}
+    section h2{font-family:"Playfair Display",serif; font-size: clamp(28px, 3.5vw, 44px); margin:0 0 16px}
+    section .lead{color:var(--muted); max-width:68ch}
+
+    .grid{display:grid; gap:22px}
+    .grid.cols-3{grid-template-columns:repeat(3, minmax(0,1fr))}
+    .grid.cols-2{grid-template-columns:repeat(2, minmax(0,1fr))}
+    .card{background:#fff; border:1px solid var(--line); border-radius:20px; overflow:hidden; display:flex; flex-direction:column}
+    .card .img{aspect-ratio:4/3; background:#eee}
+    .card .img img{width:100%; height:100%; object-fit:cover; display:block}
+    .card .body{padding:16px}
+    .card h3{font-family:"Playfair Display",serif; font-size:20px; margin:0 0 8px}
+    .card p{color:var(--muted); margin:0 0 12px}
+    .price{font-weight:600}
+
+    .list{display:grid; gap:10px; margin-top:12px}
+    .list .row{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:#fff}
+    .row .meta{display:flex; align-items:center; gap:14px}
+    .pill{border:1px solid var(--line); border-radius:999px; padding:4px 10px; font-size:12px; color:var(--muted)}
+
+    .cta{display:flex; gap:14px; flex-wrap:wrap; margin-top:18px}
+
+    .newsletter{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px}
+    input[type=email]{flex:1; min-width:220px; padding:12px 14px; border-radius:999px; border:1px solid var(--line); background:#fff}
+
+    footer{padding:40px 24px; color:var(--muted)}
+    footer .row{display:flex; gap:24px; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--line); padding-top:24px}
+    .small{font-size:12px}
+
+    @media (max-width: 920px){
+      .hero{grid-template-columns:1fr; align-items:start}
+    }
+      /* --- Minimal landing tiles inspired by editorial layouts --- */
+    .tiles{padding:72px 24px 48px; border-bottom:1px solid var(--line)}
+    .tile-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px}
+    .tile{position:relative; display:block; border-radius:18px; overflow:hidden; border:1px solid var(--line); background:#eae8e6}
+    .tile img{width:100%; height:100%; object-fit:cover; aspect-ratio:3/4; display:block; filter:saturate(0.9);}
+    .tile-overlay{position:absolute; inset:auto 0 0 0; padding:18px; background:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.35) 100%);}
+    .tile-title{font-family:"Playfair Display",serif; font-size: clamp(18px, 2.2vw, 28px); color:#fff; letter-spacing:.02em}
+    .tile:hover img{transform:scale(1.02); transition:transform .45s ease}
+
+    @media (max-width: 920px){
+      .tile-grid{grid-template-columns:1fr}
+      .tile img{aspect-ratio:4/3}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap bar">
+      <div class="brand">DIDOT</div>
+      <nav>
+        <a href="#architecture">Architecture</a>
+        <a href="#events">Events</a>
+        <a href="#shop">Shop</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+        <!-- HOME TILES (Landing) -->
+    <section class="wrap tiles" id="home">
+      <div class="tile-grid">
+        <a class="tile" href="#architecture" aria-label="Go to Architecture">
+          <img src="https://images.unsplash.com/photo-1600585154154-1e644ed9e3a9?q=80&w=1600&auto=format&fit=crop" alt="Architecture — minimal concrete and wood interior">
+          <div class="tile-overlay">
+            <span class="tile-title">Architecture</span>
+          </div>
+        </a>
+        <a class="tile" href="#events" aria-label="Go to Event Planning">
+          <img src="https://images.unsplash.com/photo-1541976076758-347942db1973?q=80&w=1600&auto=format&fit=crop" alt="Event — intimate dinner setting with warm lighting">
+          <div class="tile-overlay">
+            <span class="tile-title">Event Planning</span>
+          </div>
+        </a>
+        <a class="tile" href="#shop" aria-label="Go to Shop">
+          <img src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1600&auto=format&fit=crop" alt="Shop — crafted ceramic object on linen table">
+          <div class="tile-overlay">
+            <span class="tile-title">Shop</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE -->
+    <section id="architecture" class="wrap">
+      <h2>Architecture</h2>
+      <p class="lead">Selected projects across residential, hospitality, and cultural spaces. Each project balances proportion, light, and material calm.</p>
+      <div class="grid cols-3" data-collection="projects">
+        <!-- Project Card -->
+        <article class="card">
+          <div class="img"><img src="https://images.unsplash.com/photo-1628744876497-597918fce5d3?q=80&w=1200&auto=format&fit=crop" alt="Project 1"></div>
+          <div class="body">
+            <h3>Casa Didot</h3>
+            <p>Buenos Aires — Residential</p>
+            <a class="btn" href="#">View Project</a>
+          </div>
+        </article>
+        <article class="card">
+          <div class="img"><img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200&auto=format&fit=crop" alt="Project 2"></div>
+          <div class="body">
+            <h3>Mar Atelier</h3>
+            <p>Montevideo — Studio</p>
+            <a class="btn" href="#">View Project</a>
+          </div>
+        </article>
+        <article class="card">
+          <div class="img"><img src="https://images.unsplash.com/photo-1502003148287-a82ef80a6abc?q=80&w=1200&auto=format&fit=crop" alt="Project 3"></div>
+          <div class="body">
+            <h3>Gallery North</h3>
+            <p>Colonia — Cultural</p>
+            <a class="btn" href="#">View Project</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- EVENTS -->
+    <section id="events" class="wrap">
+      <h2>Events</h2>
+      <p class="lead">Intimate salons, seasonal launches, and architecture-led experiences. Join the next one.</p>
+      <div class="list" data-collection="events">
+        <div class="row">
+          <div class="meta">
+            <span class="pill">Nov 22</span>
+            <div>
+              <div><strong>Salon Nº4: Light & Proportion</strong></div>
+              <div class="small">DIDOT Studio — 19:00</div>
+            </div>
+          </div>
+          <!-- Replace href with Eventbrite/Ticketing URL -->
+          <a class="btn" href="#">RSVP</a>
+        </div>
+        <div class="row">
+          <div class="meta">
+            <span class="pill">Dec 14</span>
+            <div>
+              <div><strong>Objects Winter Launch</strong></div>
+              <div class="small">Casa Didot — 17:00</div>
+            </div>
+          </div>
+          <a class="btn" href="#">Get Tickets</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHOP -->
+    <section id="shop" class="wrap">
+      <h2>Shop</h2>
+      <p class="lead">A considered line of objects for daily rituals. Sustainably produced in small runs.</p>
+      <div class="grid cols-3" data-collection="products">
+        <article class="card">
+          <div class="img"><img src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop" alt="Vessel"></div>
+          <div class="body">
+            <h3>Vessel Nº1</h3>
+            <p class="price">$120</p>
+            <!-- Swap for Shopify Buy Button embed code or platform add-to-cart -->
+            <a class="btn" href="#">Add to Cart</a>
+          </div>
+        </article>
+        <article class="card">
+          <div class="img"><img src="https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?q=80&w=1200&auto=format&fit=crop" alt="Incense holder"></div>
+          <div class="body">
+            <h3>Incense Holder</h3>
+            <p class="price">$45</p>
+            <a class="btn" href="#">Add to Cart</a>
+          </div>
+        </article>
+        <article class="card">
+          <div class="img"><img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?q=80&w=1200&auto=format&fit=crop" alt="Textile"></div>
+          <div class="body">
+            <h3>Textile Nº2</h3>
+            <p class="price">$180</p>
+            <a class="btn" href="#">Add to Cart</a>
+          </div>
+        </article>
+      </div>
+      <div class="cta">
+        <a class="btn" href="#">View All Products</a>
+        <a class="btn alt" href="#newsletter">Get launch updates</a>
+      </div>
+    </section>
+
+    <!-- JOURNAL / ABOUT -->
+    <section id="about" class="wrap">
+      <h2>About</h2>
+      <p class="lead">Founded by DIDOT, the studio operates at the intersection of architecture and cultural programming, with a product practice that extends the language of our spaces into everyday objects.</p>
+      <div class="grid cols-2" style="margin-top:20px">
+        <div class="card">
+          <div class="img"><img src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=1200&auto=format&fit=crop" alt="Studio"></div>
+          <div class="body">
+            <h3>Journal</h3>
+            <p>Notes on process, materials, and event recaps.</p>
+            <a class="btn" href="#">Read Entries</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="img"><img src="https://images.unsplash.com/photo-1544965850-6f8fef3a8906?q=80&w=1200&auto=format&fit=crop" alt="Team"></div>
+          <div class="body">
+            <h3>Team & Practice</h3>
+            <p>Architecture-led, detail-obsessed, hospitality-minded.</p>
+            <a class="btn" href="#">Meet the Studio</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEWSLETTER / CONTACT -->
+    <section id="contact" class="wrap">
+      <h2>Stay in touch</h2>
+      <p class="lead">Subscribe for project reveals, event invitations, and product drops.</p>
+      <form class="newsletter" id="newsletter">
+        <!-- Replace with Mailchimp/ConvertKit/Squarespace form action -->
+        <input type="email" placeholder="Your email" required />
+        <button class="btn" type="submit">Subscribe</button>
+      </form>
+      <div class="cta">
+        <a class="btn" href="mailto:studio@didot.example">Email the Studio</a>
+        <a class="btn" href="#">Press Kit</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <div class="row">
+      <div>
+        <div class="brand">DIDOT</div>
+        <div class="small">© <span id="y"></span> DIDOT Studio. All rights reserved.</div>
+      </div>
+      <div class="small">Architecture • Events • Objects</div>
+    </div>
+  </footer>
+
+  <script>
+    // Set current year
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Placeholder: intercept newsletter submit (remove when connecting to real service)
+    document.querySelector('#newsletter')?.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      alert('Thanks for subscribing! (Connect this form to your email platform)');
+    });
+  </script>
+</body>
+</html>
